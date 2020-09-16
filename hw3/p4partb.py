@@ -60,41 +60,40 @@ def ode_solver(expression, steps, step_size, initial_value, z0, tau=None):
 def dinten_dz(z, inten):
     return 5/(1 + inten/5) * inten
 
-# 5 segments, define initial conditions
-z1 = np.array([10** (-2) * i for i in range(5+1)])
-I1 = np.zeros([5+1])
-I1[0] = 10
-i = 1
-for tmp_res in ode_solver(dinten_dz, 5, 10** (-2), 10, 0, 1):
-    I1[i] = tmp_res
-    i += 1
-print(I1[-1])
 
 # 1000 segments, define initial conditions
-z2 = np.array([0.05 * 10** (-3) * i for i in range(1000+1)])
+z2 = np.array([10** (-2) * i for i in range(1000+1)])
 I2 = np.zeros([1000+1])
-I2[0] = 10
+I2[0] = 10 ** (-3)
 i = 1
-for tmp_res in ode_solver(dinten_dz, 1000, 0.05 * 10** (-3), 10, 0):
+for tmp_res in ode_solver(dinten_dz, 1000, 10** (-2), I2[0], 0):
     I2[i] = tmp_res
     i += 1
 print(I2[-1])
 
+g = 5 / (1 + I2/5)
+
 # plot the results
 fig, ax1 = plt.subplots()
 
-plt.xlim(-0.005,0.055)
+plt.xlim(0,10)
 ax1.set_xlabel(r'$z/m$')
-ax1.set_ylabel(r'$Intensity/(W/m^2)$') # , color=color)
+ax1.set_ylabel(r'$Intensity/(W/m^2)$', color='tab:red')
 ax1.plot(z2, I2, 'o',
             # linestyle='solid',
             ms=1, color='tab:red',
             label=r'$\textrm{1000 steps}$')
-ax1.plot(z1, I1, 'o',
-            # linestyle='solid',
-            ms=5, color='tab:blue',
-            label=r'$\textrm{5 steps}$')
+# ax1.legend() # loc='center right') 
+ax1.set_yscale("log")
 
-ax1.legend() # loc='center right') 
+ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+
+color = 'tab:brown'
+# we already handled the x-label with ax1
+ax2.set_ylabel(r"$\textrm{Saturated Gain}/m^{-1}$", color=color)  
+ax2.plot(z2, g, 'o', ms=1, color=color)
+ax2.tick_params(axis='y', labelcolor=color)
+ax2.set_yscale("log")
+
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
-fig.savefig("q4a.png")
+fig.savefig("q4b.png")
