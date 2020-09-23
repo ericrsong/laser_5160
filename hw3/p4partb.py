@@ -79,6 +79,7 @@ fig, ax1 = plt.subplots()
 plt.xlim(0,10)
 ax1.set_xlabel(r'$z/m$')
 ax1.set_ylabel(r'$Intensity/(W/m^2)$', color='tab:red')
+print(I2[-1:0])
 ax1.plot(z2, I2, 'o',
             # linestyle='solid',
             ms=1, color='tab:red',
