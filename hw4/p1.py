@@ -87,8 +87,9 @@ def ode_solver_v1(expression_g, expression_I,
         g += step_size_t * k1
         for index in range(g.shape[0]):
             if g[index] < 0:
-                g[index] = 0
-
+                # gain has to be non-negative due to physical constraint
+                g[index] = 0 
+                
         # here we propagate a beam of light through the amplifier
         # so we solve the intensity as a function of position z
         for j in range(steps_z):
@@ -165,6 +166,8 @@ fig, ax = plt.subplots()
 xs = 10** (-3) * np.arange(steps_t + 1)
 ax.plot(xs, I2[:,-1])
 ax.set_ylim(0, 1000)
+ax.set_xlabel(r'$Time/ms$')
+ax.set_ylabel(r'$Intensity/(W/m^2)$')
 fig.savefig("output_intensity.png")
 
 I2 = np.transpose(I2)
